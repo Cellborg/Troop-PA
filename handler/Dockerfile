@@ -10,4 +10,4 @@ RUN pip install requests boto3
 COPY PAHandler.py /app/PAHandler.py
 
 # Command to run the Python script
-CMD ["python", "/app/QCHandler.py"]
+CMD ["python", "/app/PAHandler.py"]
