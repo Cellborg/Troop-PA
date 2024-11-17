@@ -7,7 +7,7 @@ WORKDIR /app
 RUN python -m pip install --upgrade pip
 RUN pip install requests boto3
 
-COPY QCHandler.py /app/QCHandler.py
+COPY PAHandler.py /app/PAHandler.py
 
 # Command to run the Python script
 CMD ["python", "/app/QCHandler.py"]

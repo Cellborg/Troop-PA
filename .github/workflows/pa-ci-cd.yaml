@@ -1,4 +1,4 @@
-name: Cellborg PA containers build
+name: Cellborg PA build/deploy
 
 on:
   push:
