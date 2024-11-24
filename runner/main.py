@@ -282,10 +282,13 @@ async def do_clustering(clustReq: clusteringRequest):
             Filename= 'project_values.json') 
 
         #add clustering resolution
-        with open('project_values.json', "w") as f:
+        with open('project_values.json', "r+") as f:
             data = json.load(f)
             data['clust_resolution'] = clustReq.resolution
+            #write over file
+            f.seek(0)
             json.dump(data, f)
+            f.truncate()
         print("Added clustering resolution to project values")
         
         #upload updated file to s3
