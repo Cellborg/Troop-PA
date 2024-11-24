@@ -282,7 +282,7 @@ async def do_clustering(clustReq: clusteringRequest):
             Filename= 'project_values.json') 
 
         #add clustering resolution
-        with open('project_values.json', "r+") as f:
+        with open('project_values.json', "w") as f:
             data = json.load(f)
             data['clust_resolution'] = clustReq.resolution
             json.dump(data, f)
