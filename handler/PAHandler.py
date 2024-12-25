@@ -41,6 +41,7 @@ def send_shutdown_request():
 MAX_COUNT = 1000
 currentCount=0
 
+#send notification that task is running to api
 while True:
     response = client.receive_message(QueueUrl=queue_url, MaxNumberOfMessages=10, WaitTimeSeconds=10, VisibilityTimeout=900)
     print("queueurl=",queue_url)
@@ -92,7 +93,6 @@ while True:
                     data = {
                         "user":user,
                         "project":project,
-                        "geneNames": response["gene_names"],
                         "clusters": response["clusters"],
                         "stage":"cluster"
                     }

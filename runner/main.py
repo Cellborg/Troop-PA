@@ -212,7 +212,7 @@ def clustering(s3_path, resolution):
 
     resolution_global = resolution
     return (
-        adata.var_names, adata.obs["leiden"].cat.categories
+        adata.obs["leiden"].cat.categories
     )
 
 def cell_type_annotation(annotations):
@@ -244,7 +244,8 @@ async def initialize_project(initReq: initializeProjectRequest):
         
         #create project_values.json in proj dir
         numpcs = {
-            "num_pcs":principle_components
+            "num_pcs":principle_components,
+            "gene_list": adata.var_names.to_list()
         }
         with open("project_values.json", "w") as outputfile:
             json.dump(numpcs, outputfile)
@@ -273,7 +274,7 @@ async def initialize_project(initReq: initializeProjectRequest):
 async def do_clustering(clustReq: clusteringRequest):
     try:
         s3_path = f"{clustReq.user}/{clustReq.project}"
-        gene_names, clusters = clustering(s3_path, clustReq.resolution)
+        clusters = clustering(s3_path, clustReq.resolution)
 
         #download old project_values file from s3
         s3.download_file(
@@ -299,13 +300,10 @@ async def do_clustering(clustReq: clusteringRequest):
         os.remove("project_values.json")
 
         clusters = clusters.to_list()
-        gene_names = gene_names.to_list()
-        print(f"first 10 gene_names: {type(gene_names)}", gene_names[:10],"...")
         print(f"cluster: {type(clusters)}", clusters)
         return {
             "success": True,
             "message": "Clustering successfully finished",
-            "gene_names": gene_names,
             "clusters": clusters
         }
     except Exception as err:
@@ -385,4 +383,5 @@ async def shutdown():
 
 @app.get("/health", status_code = 200)
 async def health():
+    
     return {"status": "ok"}
