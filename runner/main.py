@@ -341,6 +341,11 @@ async def gene_expression(geneReq: geneRequest):
 
         print("----removing temp file")
         os.remove("gene_expression_per_cell_with_clusters.json")
+
+        return{
+            "success": True,
+            "message": "Successfully conducted gene expression"
+        }
     except Exception as err:
         print('ERROR: ',str(err))
         return {
