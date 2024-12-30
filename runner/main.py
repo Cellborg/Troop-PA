@@ -326,13 +326,17 @@ async def gene_expression(geneReq: geneRequest):
         columns=selected_genes,
         index=adata.obs.index
         )
-
         expression_df["cluster"] = adata.obs["leiden"]
-        expression_dict = expression_df.to_dict(orient="index")
+        umap_df = pd.DataFrame(
+        adata.obsm["X_umap"], columns=["UMAP1", "UMAP2"], index=adata.obs.index
+        )
+    
+        combined_df = pd.concat([umap_df, expression_df], axis=1)
+        combined_dict = combined_df.to_dict(orient="index")
 
         print("saving gene expression to local...")
         with open("gene_expression_per_cell_with_clusters.json", "w") as f:
-            json.dump(expression_dict, f)
+            json.dump(combined_dict, f)
         
         s3_path = f"{geneReq.user}/{geneReq.project}"
 
