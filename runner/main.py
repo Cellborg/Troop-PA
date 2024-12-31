@@ -218,7 +218,8 @@ def clustering(s3_path, resolution):
 def cell_type_annotation(annotations):
     global adata
     global resolution_global
-    print(annotations)
+    for key, value in annotations.items():
+        print(type(key), key, ':', type(value), value)
     adata.obs["cell_type_lvl1"] = adata.obs["leiden"].map(annotations)
 #----- main -------
 app = FastAPI()
