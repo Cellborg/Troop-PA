@@ -397,9 +397,12 @@ async def annotations(annotateRequest: annoRequest):
 @app.post("/shutdown")
 async def shutdown(user: str, project: str):
     try:
-        # Assuming adata is your AnnData object and you have a function to upload it to S3
-        upload_anndata_to_s3(f"{user}/{project}/adata.h5ad", adata)
-        print("AnnData object uploaded to S3 successfully.")
+        if user and project:
+            # Assuming adata is your AnnData object and you have a function to upload it to S3
+            upload_anndata_to_s3(f"{user}/{project}/adata.h5ad", adata)
+            print("AnnData object uploaded to S3 successfully.")
+        else:
+            print('User and project not provided. AnnData object not uploaded to S3.')
     except Exception as e:
         print(f"Failed to upload AnnData object to S3: {str(e)}")
     
