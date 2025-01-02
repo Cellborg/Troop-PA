@@ -396,6 +396,7 @@ async def annotations(annotateRequest: annoRequest):
 
 @app.post("/shutdown")
 async def shutdown(user: str, project: str):
+    global adata
     try:
         if user and project:
             # Assuming adata is your AnnData object and you have a function to upload it to S3
