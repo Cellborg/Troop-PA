@@ -172,6 +172,15 @@ def upload_plot_to_s3(s3_key, localfile):
     s3.upload_file(localfile, user_environment['qc_dataset_bucket'], s3_key, Callback=print)
     print(f"Uploaded plot png to S3: {s3_key}")
 
+def upload_anndata_to_s3(s3_path, adata):
+    # Save the AnnData object to a temporary file
+    temp_file = "/tmp/adata.h5ad"
+    adata.write(temp_file)
+    
+    
+    bucket_name = user_environment['qc_dataset_bucket']
+    s3.upload_file(temp_file, bucket_name, s3_path)
+
 def clustering(s3_path, resolution):
     global adata
     global resolution_global
@@ -386,7 +395,14 @@ async def annotations(annotateRequest: annoRequest):
     #    }
 
 @app.post("/shutdown")
-async def shutdown():
+async def shutdown(user: str, project: str):
+    try:
+        # Assuming adata is your AnnData object and you have a function to upload it to S3
+        upload_anndata_to_s3(f"{user}/{project}/adata.h5ad", adata)
+        print("AnnData object uploaded to S3 successfully.")
+    except Exception as e:
+        print(f"Failed to upload AnnData object to S3: {str(e)}")
+    
     os.kill(os.getpid(), signal.SIGTERM)
     return Response(status_code=200, content='Server shutting down...')
 

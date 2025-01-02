@@ -28,10 +28,13 @@ def send_request(endpoint, data):
     response = requests.post(url, json = data, headers = {'Content-Type': 'application/json'})
     return response.json()
 
-def send_shutdown_request():
+def send_shutdown_request(user=None, project=None):
     url = f"http://127.0.0.1:8001/shutdown"
     try:
-        response = requests.post(url, json = {"status": "complete"}, headers = {'Content-Type': 'application/json'})
+        if user and project:
+            response = requests.post(url, json = {"user": user, "project": project}, headers = {'Content-Type': 'application/json'})
+        else:
+            response = requests.post(url, json = {"status": "complete"}, headers = {'Content-Type': 'application/json'})
         response.raise_for_status()
     except requests.ConnectionError:
         print("Connection was closed by the server (expected behavior during shutdown).")
@@ -129,8 +132,8 @@ while True:
                     print(response)
             elif request_type == "killServer":
 
-                print("Shutting down the R QC server...")
-                send_shutdown_request()
+                print("Saving adata and shutting down the PA server...")
+                send_shutdown_request(user, project)
                 print("Shutting down the python handler")
                 exit(0)
             
