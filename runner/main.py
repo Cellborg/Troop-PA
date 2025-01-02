@@ -1,5 +1,5 @@
 import signal
-from fastapi import FastAPI, Response
+from fastapi import Body, FastAPI, Response
 from pydantic import BaseModel
 import os
 import boto3
@@ -395,8 +395,11 @@ async def annotations(annotateRequest: annoRequest):
     #    }
 
 @app.post("/shutdown")
-async def shutdown(user: str, project: str):
+async def shutdown(data: dict = Body(...)):
     global adata
+    user = data.get("user")
+    project = data.get("project")
+    print(f"Received shutdown request with user: {user}, project: {project}")
     try:
         if user and project:
             # Assuming adata is your AnnData object and you have a function to upload it to S3
